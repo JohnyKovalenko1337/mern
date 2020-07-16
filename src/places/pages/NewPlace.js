@@ -7,19 +7,25 @@ import './NewPlace.css';
 
 const formReducer = (state, action) => {
     switch (action.type) {
+
         case 'INPUT_CHANGE':
+
             let formIsValid = true;
+
             for (const inputId in state.inputs) {
+                if (!state.inputs[inputId]) {
+                    continue;
+                }
                 if (inputId === action.inputId) {
                     formIsValid = formIsValid && action.isValid;
-                }
-                else {
+                } else {
                     formIsValid = formIsValid && state.inputs[inputId].isValid;
                 }
             }
+
             return {
                 ...state,
-                input: {
+                inputs: {
                     ...state.inputs,
                     [action.inputId]: {
                         value: action.value,
@@ -49,10 +55,8 @@ const Places = () => {
 
     })
     const InputHandler = useCallback((id, value, isValid) => {
-        dispatch({type: 'INPUT_CHANGE', value: value, isValid: isValid, inputId: id})
-    }, [
-
-    ]);
+        dispatch({ type: 'INPUT_CHANGE', value: value, isValid: isValid, inputId: id })
+    }, []);
     return (
         <form className="place-form">
             <Input
@@ -72,7 +76,7 @@ const Places = () => {
                 validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
                 onInput={InputHandler}
             />
-            <Button type="submit" disabled={!formState.IsValid}>Add place</Button>
+            <Button type="submit" disabled={!formState.isValid}>Add place</Button>
         </form>
     )
 };
