@@ -3,7 +3,7 @@ import React, { useCallback, useReducer } from 'react'; // useReducer for multip
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../util/validators';
-import './NewPlace.css';
+import './PlaceForm.css';
 
 const formReducer = (state, action) => {
     switch (action.type) {
@@ -54,13 +54,20 @@ const Places = () => {
         isValid: false
 
     })
+
     const InputHandler = useCallback((id, value, isValid) => {
         dispatch({ type: 'INPUT_CHANGE', value: value, isValid: isValid, inputId: id })
     }, []);
+
+    const placeSubmitHandler = (event)=>{
+        event.preventDefault();
+        console.log(formState.inputs);          //send it to backend
+    };
+
     return (
-        <form className="place-form">
+        <form className="place-form" onSubmit={placeSubmitHandler}>
             <Input
-                element={'input'}
+                element='input'
                 type="text"
                 label="Title"
                 id="title"
@@ -69,11 +76,19 @@ const Places = () => {
                 onInput={InputHandler}
             />
             <Input
-                element={'textarea'}
+                element='textarea'
                 label="Description"
                 id="description"
                 errorText="plz enter a valid description,(min 5 elements)"
                 validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
+                onInput={InputHandler}
+            />
+            <Input
+                element='input'
+                label="Address"
+                id="address"
+                errorText="plz enter a valid address"
+                validators={[VALIDATOR_REQUIRE()]}
                 onInput={InputHandler}
             />
             <Button type="submit" disabled={!formState.isValid}>Add place</Button>
