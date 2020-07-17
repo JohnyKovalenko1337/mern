@@ -2,8 +2,10 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import Input from '../../shared/components/FormElements/Input';
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../util/validators';
 import Button from '../../shared/components/FormElements/Button';
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../util/validators';
+
+import { useForm } from '../../shared/hooks/form-hook';
 import './PlaceForm.css';
 
 const Dummy_Items = [
@@ -36,7 +38,30 @@ const Dummy_Items = [
 const UpdatePlace = () => {
     const placeId = useParams().placeId;
 
+
+
     const indentifedPlace = Dummy_Items.find(p => p.id === placeId);
+
+    const [formState, inputHandler] = useForm({
+        title: {
+            value: indentifedPlace.title,
+            isValid: true
+        },
+        description: {
+            value: indentifedPlace.description,
+            isValid: true
+        },
+        address: {
+            value: indentifedPlace.address,
+            isValid: true
+        }
+    }, true);
+
+const placeUpdateSubmitHandler = (event)=>{
+    event.preventDefault();
+    console.log(formState.inputs);
+};
+
 
     if (!indentifedPlace) {
         return (
@@ -47,7 +72,7 @@ const UpdatePlace = () => {
     }
 
     return (
-        <form>
+        <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
             <Input
                 id="title"
                 element="input"
@@ -55,9 +80,9 @@ const UpdatePlace = () => {
                 label="Title"
                 validators={[VALIDATOR_REQUIRE()]}
                 errorText="plz enter a valid title"
-                onInput={() => { }}
-                value={indentifedPlace.title}
-                valid={true}
+                onInput={inputHandler}
+                initialValue={formState.inputs.title.value}
+                initialValid={formState.inputs.title.isValid}
             />
             <Input
                 id="description"
@@ -65,9 +90,9 @@ const UpdatePlace = () => {
                 label="Description"
                 validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(5)]}
                 errorText="plz enter a valid description(at list 5 characters)"
-                onInput={() => { }}
-                value={indentifedPlace.description}
-                valid={true}
+                onInput={inputHandler}
+                initialValue={formState.inputs.description.value}
+                initialValid={formState.inputs.description.isValid}
             />
             <Input
                 id="address"
@@ -75,11 +100,11 @@ const UpdatePlace = () => {
                 type="text"
                 validators={[VALIDATOR_REQUIRE()]}
                 errorText="plz enter a valid Address"
-                onInput={() => { }}
-                value={indentifedPlace.address}
-                valid={true}
+                onInput={inputHandler}
+                initialValue={formState.inputs.address.value}
+                initialValid={formState.inputs.address.isValid}
             />
-            <Button type="submit" disabled={true}>
+            <Button type="submit" disabled={!formState.isValid}>
                 Update Place
             </Button>
         </form>
