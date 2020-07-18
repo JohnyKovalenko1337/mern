@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
+import Card from '../../shared/components/UIElements/Card';
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../util/validators';
 
 import { useForm } from '../../shared/hooks/form-hook';
@@ -36,37 +37,71 @@ const Dummy_Items = [
 ]
 
 const UpdatePlace = () => {
+
+    const [isLoading, setIsLoading] = useState(true)
     const placeId = useParams().placeId;
 
 
+    const [formState, inputHandler, setFormData] = useForm({
+        title: {
+            value: '',
+            isValid: false
+        },
+        description: {
+            value: '',
+            isValid: false
+        },
+        address: {
+            value: '',
+            isValid: false
+        }
+    }, false);
 
     const indentifedPlace = Dummy_Items.find(p => p.id === placeId);
 
-    const [formState, inputHandler] = useForm({
-        title: {
-            value: indentifedPlace.title,
-            isValid: true
-        },
-        description: {
-            value: indentifedPlace.description,
-            isValid: true
-        },
-        address: {
-            value: indentifedPlace.address,
-            isValid: true
+    useEffect(() => {
+        if (indentifedPlace) {
+            setFormData({
+                title: {
+                    value: indentifedPlace.title,
+                    isValid: true
+                },
+                description: {
+                    value: indentifedPlace.description,
+                    isValid: true
+                },
+                address: {
+                    value: indentifedPlace.address,
+                    isValid: true
+                }
+            }, true);
         }
-    }, true);
+        setIsLoading(false);
+    }, [setFormData, indentifedPlace])
 
-const placeUpdateSubmitHandler = (event)=>{
-    event.preventDefault();
-    console.log(formState.inputs);
-};
+
+    const placeUpdateSubmitHandler = (event) => {
+        event.preventDefault();
+        console.log(formState.inputs);
+    };
 
 
     if (!indentifedPlace) {
         return (
             <div className="center">
-                <h2>No places id found</h2>
+                <Card>
+                    <h2>No places id found</h2>
+                </Card>
+            </div>
+        )
+    }
+
+    if (isLoading) {
+        return (
+            <div className="center">
+                <Card>
+                    <h2>No places id found</h2>
+                </Card>
             </div>
         )
     }
@@ -108,7 +143,9 @@ const placeUpdateSubmitHandler = (event)=>{
                 Update Place
             </Button>
         </form>
+
     )
+
 };
 
 export default UpdatePlace;
