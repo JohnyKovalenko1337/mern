@@ -3,42 +3,30 @@ import React, { useEffect, useState } from 'react';
 import UserList from '../components/UserList';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import { useHttpClient } from '../../shared/hooks/http-hook';
+
 
 const Users = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState();
+    const { isLoading, error, setRequest, handleError} = useHttpClient();
     const [data, setData] = useState();
     useEffect(() => {
         const sendRequest = async () => {
-            setIsLoading(true);
             try {
 
-                const responce = await fetch('http://localhost:8000/user');
-
-                const responceData = await responce.json();
-
-                if (!responce.ok) {
-                    throw new Error(responceData.message);
-                }
+                const responceData = await setRequest('http://localhost:8000/user');
 
                 setData(responceData.users);
             }
             catch (err) {
-                setError(err.message || 'An error has occurred');
             }
-            setIsLoading(false);
-
         }
         sendRequest();
-    }, []);
+    }, [ setRequest]);
 
-    const handelError = () => {
-        setError(null);
-    };
 
     return (
         <React.Fragment>
-            <ErrorModal error={error} onClear={handelError} /> {/* setting error from useState */}
+            <ErrorModal error={error} onClear={handleError} /> {/* setting error from useState */}
             {isLoading && (
                 <div className="center">
                     <LoadingSpinner asOverlay />
