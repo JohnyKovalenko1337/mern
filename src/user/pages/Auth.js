@@ -8,6 +8,7 @@ import LoadSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 import { VALIDATOR_REQUIRE, VALIDATOR_EMAIL, VALIDATOR_MINLENGTH } from '../../util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
+import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
 import './Auth.css';
 
@@ -18,9 +19,7 @@ const Auth = (props) => {
     const auth = useContext(AuthContext);
 
     const [isLoginMode, setIsLoginMode] = useState(true);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(false);
-
+    const { isLoading, error, setRequest, handleError } = useHttpClient();
     const [formState, InputHandler, setFormData] = useForm({
         email: {
             value: '',
@@ -36,63 +35,46 @@ const Auth = (props) => {
     const authSubmitHandler = async (event) => {
 
         event.preventDefault();
-        setIsLoading(true);
 
         if (isLoginMode) {
             try {
 
-                const responce = await fetch('http://localhost:8000/user/login', {
-                    method: 'POST',
-                    headers: {
+                await setRequest('http://localhost:8000/user/login',
+                    'POST',
+                    {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
+                    JSON.stringify({
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value
                     })
-                });
+                );
 
-                const responceData = await responce.json();
-                if (!responce.ok) {
-                    throw new Error(responceData.message);
-                }
-                setIsLoading(false);
                 auth.login()            // updating context 
             }
             catch (err) {
                 console.log(err);
-                setIsLoading(false);
-                setError(err.message || 'Error occured');
             }
         }
         else {
             try {
-
-                const responce = await fetch('http://localhost:8000/user/signup', {
-                    method: 'POST',
-                    headers: {
+                await setRequest('http://localhost:8000/user/signup',
+                    'POST',
+                    {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
+                    JSON.stringify({
                         name: formState.inputs.name.value,
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value
                     })
-                });
+                );
 
-                const responceData = await responce.json();
-                if (!responce.ok) {
-                    throw new Error(responceData.message);
-                }
-                console.log(responceData);
-                setIsLoading(false);
                 auth.login()            // updating context 
 
             }
             catch (err) {
                 console.log(err);
-                setIsLoading(false);
-                setError(err.message || 'Error occured');
             }
         }
     };
@@ -122,13 +104,10 @@ const Auth = (props) => {
         setIsLoginMode(prevMode => !prevMode);
     };
 
-    const handelError = () => {
-        setError(null);
-    };
 
     return (
         <React.Fragment>
-            <ErrorModal error={error} onClear={handelError} /> {/* setting error from useState */}
+            <ErrorModal error={error} onClear={handleError} /> {/* setting error from useState */}
             <Card className="authentication">
                 {isLoading && <LoadSpinner asOverlay />}
                 <h2>{isLoginMode ? 'LOGIN Required' : 'SIGNUP Required'}</h2>
