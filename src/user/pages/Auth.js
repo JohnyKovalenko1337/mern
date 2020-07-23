@@ -39,7 +39,7 @@ const Auth = (props) => {
         if (isLoginMode) {
             try {
 
-                await setRequest('http://localhost:8000/user/login',
+                const responseData = await setRequest('http://localhost:8000/user/login',
                     'POST',
                     {
                         'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ const Auth = (props) => {
                     })
                 );
 
-                auth.login()            // updating context 
+                auth.login(responseData.user.id);            // updating context 
             }
             catch (err) {
                 console.log(err);
@@ -58,7 +58,7 @@ const Auth = (props) => {
         }
         else {
             try {
-                await setRequest('http://localhost:8000/user/signup',
+                const responseData = await setRequest('http://localhost:8000/user/signup',
                     'POST',
                     {
                         'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ const Auth = (props) => {
                     })
                 );
 
-                auth.login()            // updating context 
+                auth.login(responseData.user.id);            // updating context 
 
             }
             catch (err) {
