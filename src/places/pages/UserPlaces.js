@@ -16,11 +16,13 @@ const UserPlaces = (props) => {
     const userId = useParams().userId;
 
 
+
     useEffect(() => {
         const fetchPlace = async () => {
             try {
                 const responceData = await setRequest(`http://localhost:8000/places/user/${userId}`);
                 setLoadedPlaces(responceData.place)
+
             }
             catch (err) { }
 
@@ -28,16 +30,23 @@ const UserPlaces = (props) => {
         fetchPlace()
     }, [setRequest, userId]);
 
+    const placeDeletedHandler = deletedPlaceId => {
+        setLoadedPlaces(prevPlaces =>
+            prevPlaces.filter(place => place.id !== deletedPlaceId)
+        );
+    };
 
     return (
         <React.Fragment>
             <ErrorModal error={error} onClear={handleError} /> {/* setting error from useState */}
             {isLoading &&
                 <div className="center">
-                    <LoadSpinner asOverlay />
+                    <LoadSpinner  />
                 </div>
             }
-            {!isLoading && loadedPlaces && <PlacesList items={loadedPlaces}/>}
+            {!isLoading && loadedPlaces && (
+                <PlacesList onDeletePlace={placeDeletedHandler} items={loadedPlaces} />
+            )}
         </React.Fragment>
 
     );
