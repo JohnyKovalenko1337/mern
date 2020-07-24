@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 import LoadSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
@@ -31,6 +32,10 @@ const Places = () => {
             address: {
                 value: '',
                 isValid: false,
+            },
+            image: {
+                value: null,
+                isValid: false
             }
 
         },
@@ -43,19 +48,20 @@ const Places = () => {
         event.preventDefault();
 
         try {
+            const formData = new FormData();
+            formData.append('title', formState.inputs.title.value);
+            formData.append('description', formState.inputs.description.value);
+            formData.append('address', formState.inputs.address.value);
+            formData.append('image', formState.inputs.image.value)
+            formData.append('creator', auth.userId)
+
             await setRequest(
                 'http://localhost:8000/places/create',
                 'POST',
-                {
-                    'Content-Type': 'application/json'
-                },
-                JSON.stringify({
-                    title: formState.inputs.title.value,
-                    description: formState.inputs.description.value,
-                    address: formState.inputs.address.value,
-                    creator: auth.userId
-                }));
-                history.push('/');
+                {},
+                formData
+                );
+            history.push('/');
         }
         catch (err) {
 
@@ -93,7 +99,13 @@ const Places = () => {
                     validators={[VALIDATOR_REQUIRE()]}
                     onInput={InputHandler}
                 />
+                <ImageUpload
+                    id="image"
+                    onInput={InputHandler}
+                    errorText="Please provide an image"
+                />
                 <Button type="submit" disabled={!formState.isValid}>Add place</Button>
+
             </form>
         </React.Fragment>
 
