@@ -52,7 +52,7 @@ const Auth = (props) => {
                     })
                 );
 
-                auth.login(responseData.user.id);            // updating context 
+                auth.login(responseData.userId, responseData.token);            // updating context 
             }
             catch (err) {
                 console.log(err);
@@ -63,17 +63,15 @@ const Auth = (props) => {
                 const formData = new FormData();
                 formData.append('email',formState.inputs.email.value);
                 formData.append('name',formState.inputs.name.value);
-                formData.append('password',formState.inputs.password.value);
+                formData.append('password', formState.inputs.password.value);
                 formData.append('image',formState.inputs.image.value)
                 const responseData = await setRequest('http://localhost:8000/user/signup',
                     'POST',
-                    {
-
-                    },
+                    {},
                     formData
                 );
 
-                auth.login(responseData.user.id);            // updating context 
+                auth.login(responseData.userId, responseData.token);            // updating context 
 
             }
             catch (err) {
