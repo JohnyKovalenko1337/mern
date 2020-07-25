@@ -58,7 +58,9 @@ const Places = () => {
             await setRequest(
                 'http://localhost:8000/places/create',
                 'POST',
-                {},
+                {
+                    Authorization: "Bearer "+auth.token
+                },
                 formData
                 );
             history.push('/');

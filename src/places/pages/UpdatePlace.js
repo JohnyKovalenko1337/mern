@@ -14,7 +14,7 @@ import './PlaceForm.css';
 
 
 const UpdatePlace = () => {
-    const auth = useContext( AuthContext);
+    const auth = useContext(AuthContext);
     const { isLoading, error, setRequest, handleError } = useHttpClient();
     const [loadedPlace, setLoadedPlace] = useState()
     const placeId = useParams().placeId;
@@ -67,13 +67,15 @@ const UpdatePlace = () => {
                 `http://localhost:8000/places/${placeId}`,
                 'PATCH',
                 {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: "Bearer " + auth.token
+
                 },
                 JSON.stringify({
                     title: formState.inputs.title.value,
                     description: formState.inputs.description.value,
                 }));
-                history.push('/'+auth.userId+'/places');
+            history.push('/' + auth.userId + '/places');
         }
         catch (err) {
 
@@ -101,13 +103,13 @@ const UpdatePlace = () => {
         )
     }
 
-    
+
 
     return (
         <React.Fragment>
             <ErrorModal error={error} onClear={handleError} />
 
-            { !isLoading && loadedPlace && <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
+            {!isLoading && loadedPlace && <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
 
                 <Input
                     id="title"
@@ -130,7 +132,7 @@ const UpdatePlace = () => {
                     initialValue={loadedPlace.description}
                     initialValid={true}
                 />
-    
+
                 <Button type="submit" disabled={!formState.isValid}>
                     Update Place
             </Button>
