@@ -32,7 +32,7 @@ const PlaceItem = (props) => {
     const confirmDeleteHandler = async () => {
         setShowConfirmModal(false);
         try {
-            await setRequest(`http://localhost:8000/places/${props.id}`,
+            await setRequest(process.env.REACT_APP_BACKEND_API + `places/${props.id}`,
                 'DELETE',
                 {Authorization: "Bearer " + auth.token}
 
@@ -80,7 +80,7 @@ const PlaceItem = (props) => {
                     {isLoading && <LoadSpinner asOverlay />
                     }
                     <div className="place-item__image ">
-                        <img src={`http://localhost:8000/${props.image}`} alt={props.title} />
+                        <img src={process.env.REACT_APP_BACKEND_API + `${props.image}`} alt={props.title} />
                     </div>
                     <div className="place-item__info">
                         <h2>{props.title}</h2>

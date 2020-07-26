@@ -41,7 +41,7 @@ const Auth = (props) => {
         if (isLoginMode) {
             try {
 
-                const responseData = await setRequest('http://localhost:8000/user/login',
+                const responseData = await setRequest(process.env.REACT_APP_BACKEND_API + 'user/login',
                     'POST',
                     {
                         'Content-Type': 'application/json'
@@ -65,7 +65,7 @@ const Auth = (props) => {
                 formData.append('name',formState.inputs.name.value);
                 formData.append('password', formState.inputs.password.value);
                 formData.append('image',formState.inputs.image.value)
-                const responseData = await setRequest('http://localhost:8000/user/signup',
+                const responseData = await setRequest(process.env.REACT_APP_BACKEND_API + 'user/signup',
                     'POST',
                     {},
                     formData

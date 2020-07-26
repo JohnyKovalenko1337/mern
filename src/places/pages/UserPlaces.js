@@ -20,7 +20,7 @@ const UserPlaces = (props) => {
     useEffect(() => {
         const fetchPlace = async () => {
             try {
-                const responceData = await setRequest(`http://localhost:8000/places/user/${userId}`);
+                const responceData = await setRequest(process.env.REACT_APP_BACKEND_API + `places/user/${userId}`);
                 setLoadedPlaces(responceData.place)
 
             }

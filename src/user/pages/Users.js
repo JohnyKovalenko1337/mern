@@ -13,7 +13,7 @@ const Users = () => {
         const sendRequest = async () => {
             try {
 
-                const responceData = await setRequest('http://localhost:8000/user');
+                const responceData = await setRequest(process.env.REACT_APP_BACKEND_API + 'user');
 
                 setData(responceData.users);
             }
