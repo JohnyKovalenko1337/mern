@@ -46,9 +46,9 @@ const Places = () => {
 
     const placeSubmitHandler = async (event) => {
         event.preventDefault();
-
+        let formData;
         try {
-            const formData = new FormData();
+            formData = new FormData();
             formData.append('title', formState.inputs.title.value);
             formData.append('description', formState.inputs.description.value);
             formData.append('address', formState.inputs.address.value);
@@ -66,8 +66,8 @@ const Places = () => {
         catch (err) {
 
         }
-    };
 
+    };
     return (
         <React.Fragment>
 
